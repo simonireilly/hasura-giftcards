@@ -10,7 +10,7 @@ jobs:
           key: dependency-cache-v1-{{ checksum "yarn.lock" }}
       - run:
           name: Install Dependencies
-          command: yarn --network-concurrency 1
+          command: yarn --network-concurrency 1 --frozen-lockfile
       - save_cache:
           key: dependency-cache-v1-{{ checksum "yarn.lock" }}
           paths:
