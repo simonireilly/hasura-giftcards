@@ -1,10 +1,18 @@
 ## INIT
 
+ENV=development
+
 init: # Init the entire project ready to run
 	make build
 	make up
-	echo "SELECT 'CREATE DATABASE gift_cards_development' WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = 'gift_cards_development')\gexec" | docker-compose exec -T postgres psql -U postgres
+	echo "SELECT 'CREATE DATABASE gift_cards_$(ENV)' WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = 'gift_cards_$(ENV)')\gexec" | docker-compose exec -T postgres psql -U postgres
 	make db-migrate
+
+test:
+	make init ENV=test
+	make up ENV=test
+	docker-compose run knex yarn jest || true
+	make stop
 
 build: # Build the backend
 	docker-compose build
@@ -39,7 +47,7 @@ db-rollback: # Rollback the last migration
 	docker-compose run knex yarn knex migrate:rollback
 
 db-drop: # drop the database
-	echo "DROP DATABASE gift_cards_development;" | docker-compose exec -T postgres psql -U postgres
+	echo "DROP DATABASE gift_cards_$(ENV);" | docker-compose exec -T postgres psql -U postgres
 
 ## scrape
 
@@ -57,7 +65,7 @@ hasura: # Exec into the hasura container
 URL = http://localhost:8080
 
 get-schema:
-	yarn gq $(URL)/v1/graphql -H 'X-Hasura-Admin-Secret: myadminsecretkey' --introspect > ./backend/hasura/schema.gql
+	yarn gq $(URL)/v1/graphql -H 'X-Hasura-Admin-Secret: myadminsecretkey' --introspect > ./hasura/schema.gql
 
 get-metadata: # Get the meta data from the hasura container
 	curl -H 'x-hasura-admin-secret: myadminsecretkey' \

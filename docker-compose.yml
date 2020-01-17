@@ -13,7 +13,7 @@ services:
     depends_on:
       - "postgres"
     environment:
-      HASURA_GRAPHQL_DATABASE_URL: postgres://postgres:@postgres:5432/gift_cards_development
+      HASURA_GRAPHQL_DATABASE_URL: postgres://postgres:@postgres:5432/gift_cards_${ENV:-development}
       HASURA_GRAPHQL_ENABLE_CONSOLE: "true"
       HASURA_GRAPHQL_ENABLED_LOG_TYPES: startup, http-log, webhook-log, websocket-log, query-log
       HASURA_GRAPHQL_ADMIN_SECRET: myadminsecretkey
@@ -26,6 +26,6 @@ services:
       - "postgres"
     environment:
       NODE_ENV: development
-      DATABASE_URL: postgres://postgres:@postgres:5432/gift_cards_development
+      DATABASE_URL: postgres://postgres:@postgres:5432/gift_cards_${ENV:-development}
     volumes:
       - .:/app:delegated

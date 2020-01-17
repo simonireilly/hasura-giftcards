@@ -1,0 +1,14 @@
+POST /v1alpha1/graphql
+content-type: application/json
+x-hasura-admin-secret: myadminsecretkey
+accept: */*
+accept-encoding: gzip,deflate
+body: {\"query\":\"\\nquery GetGiftCardByCode($code: String) {\\n  gift_cards(where: {code: {_eq: $code}}) {\\n    id\\n    code\\n    valid_from\\n    valid_to\\n    initial_balance\\n    available_balance\\n    created_at\\n    updated_at\\n    claims {\\n      state\\n      id\\n      amount\\n    }\\n  }\\n}\\n\",\"variables\":{\"code\":\"STORE-0001\"}}
+
+HTTP/1.1 200 OK
+transfer-encoding: chunked
+date: Fri, 17 Jan 2020 22:26:34 GMT
+server: Warp/3.2.26
+content-type: application/json; charset=utf-8
+
+{"data":{"gift_cards":[{"id":20,"code":"STORE-0001","valid_from":"2020-01-17T22:26:34.118692","valid_to":"2020-01-17T22:26:34.118692","initial_balance":2000,"available_balance":2000,"created_at":"2020-01-17T22:26:34.118692+00:00","updated_at":"2020-01-17T22:26:34.118692+00:00","claims":[]}]}}
