@@ -1,3 +1,5 @@
+[![CircleCI](https://circleci.com/gh/simonireilly/hasura-giftcards.svg?style=svg)](https://circleci.com/gh/simonireilly/hasura-giftcards)
+
 # Gift Cards Hasura
 
 A simple gift card payment gateway written in hasura with postgres 12
