@@ -1,0 +1,31 @@
+version: "3.5"
+
+services:
+  postgres:
+    image: postgres:12.1-alpine
+    ports:
+      - 5432:5432
+
+  graphql-engine:
+    image: hasura/graphql-engine:v1.0.0-alpha42.cli-migrations
+    ports:
+      - "8080:8080"
+    depends_on:
+      - "postgres"
+    environment:
+      HASURA_GRAPHQL_DATABASE_URL: postgres://postgres:@postgres:5432/gift_cards_development
+      HASURA_GRAPHQL_ENABLE_CONSOLE: "true"
+      HASURA_GRAPHQL_ENABLED_LOG_TYPES: startup, http-log, webhook-log, websocket-log, query-log
+      HASURA_GRAPHQL_ADMIN_SECRET: myadminsecretkey
+
+  knex:
+    build:
+      context: .
+      dockerfile: Dockerfile.knex
+    depends_on:
+      - "postgres"
+    environment:
+      NODE_ENV: development
+      DATABASE_URL: postgres://postgres:@postgres:5432/gift_cards_development
+    volumes:
+      - .:/app:delegated
