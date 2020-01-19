@@ -5,14 +5,14 @@ ENV=development
 init: # Init the entire project ready to run
 	make build
 	make up
-	echo "SELECT 'CREATE DATABASE gift_cards_$(ENV)' WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = 'gift_cards_$(ENV)')\gexec" | docker-compose exec -T postgres psql -U postgres
-	make db-migrate
+	make db-setup ENV=development
+	make db-setup ENV=test
+	make db-migrate ENV=development
+	make db-migrate ENV=test
 
 test:
-	make init ENV=test
 	make up ENV=test
-	docker-compose run knex yarn jest || true
-	make stop
+	docker-compose run --rm knex yarn jest --detectOpenHandles || true
 
 build: # Build the backend
 	docker-compose build
@@ -32,46 +32,43 @@ down: # make the backend down and remove any orphaned containers, and all volume
 tail: # Tail the docker compose logs for the backend
 	docker-compose logs -f --tail="100"
 
-## DB
+#
+# DB
+#
+# Commands for running the postgres database with the connection adapter
 
 psql: # Exec into the psql container for debugging
 	docker-compose exec postgres psql -U postgres
 
 migration-%: # Generate migration commands
-	docker-compose run knex yarn knex migrate:make $*
+	docker-compose run --rm knex yarn knex migrate:make $*
 
 db-migrate: # Run all migrations to the latest timestamp
-	docker-compose run knex yarn knex migrate:latest
+	docker-compose run --rm knex yarn knex migrate:latest --env $(ENV)
 
 db-rollback: # Rollback the last migration
-	docker-compose run knex yarn knex migrate:rollback
+	docker-compose run --rm knex yarn knex migrate:rollback --env $(ENV)
+
+db-setup: # setup the database
+	echo "SELECT 'CREATE DATABASE gift_cards_$(ENV)' WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = 'gift_cards_$(ENV)')\gexec" | docker-compose exec -T postgres psql -U postgres
 
 db-drop: # drop the database
 	echo "DROP DATABASE gift_cards_$(ENV);" | docker-compose exec -T postgres psql -U postgres
 
-## scrape
+#
+# Hasura - GraphQL
+#
+# Control Hasura using the metadata, make changes in the console, then export your changes to the yml file
+# This commits as code our changes
 
-scrape: # Run cypress for scraping data
-	yarn cypress run
-
-seed: # Seed data from rail scraping to the database
-	GRAPHQL_URL=http://localhost:8080/v1/graphql HASURA_GRAPHQL_ADMIN_SECRET=myadminsecretkey yarn seed
-
-## hasura
-
-hasura: # Exec into the hasura container
-	docker-compose exec hasura sh
-
-URL = http://localhost:8080
-
-get-schema:
-	yarn gq $(URL)/v1/graphql -H 'X-Hasura-Admin-Secret: myadminsecretkey' --introspect > ./hasura/schema.gql
-
-get-metadata: # Get the meta data from the hasura container
-	curl -H 'x-hasura-admin-secret: myadminsecretkey' \
-	-d'{"type": "export_metadata", "args": {}}' $(URL)/v1/query \
-	| jq . > ./hasura/metadata.json
-
-set-metadata: # Set the metadata for the hasura container
-	curl -H 'x-hasura-admin-secret: myadminsecretkey' \
-	-d'{"type":"replace_metadata", "args":$(shell cat ./hasura/metadata.json)}' $(URL)/v1/query
+hasura-export-metadata: ## Export your configured meta data to the hasra-migrations folder
+	docker-compose exec \
+		--workdir /tmp/hasura-migrations hasura hasura-cli metadata export
+	docker-compose exec hasura \
+		cp /tmp/hasura-migrations/migrations/metadata.yaml /hasura-migrations/
+hasura-apply-metadata: ## Apply your configured meta data to the hasra cli
+	docker-compose exec \
+		--workdir /tmp/hasura-migrations hasura hasura-cli metadata apply
+hasura-clear-metadata: ## Apply your configured meta data to the hasra cli
+	docker-compose exec \
+		--workdir /tmp/hasura-migrations hasura hasura-cli metadata clear

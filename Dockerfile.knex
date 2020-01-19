@@ -1,7 +1,8 @@
 FROM node:11.13.0-alpine
 
-COPY ./package.json /app/
-WORKDIR /app
-RUN yarn --production
+RUN apk add git
 
-ADD . /app
+COPY ./package.json /app/
+COPY ./yarn.lock /app/
+WORKDIR /app
+RUN yarn install

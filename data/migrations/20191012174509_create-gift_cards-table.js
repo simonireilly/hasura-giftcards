@@ -18,7 +18,6 @@ exports.up = function (knex) {
         precision: 6
       }).defaultTo(knex.fn.now(6)).comment('Validity expired (date and time) from this date')
 
-
       table.timestamps(true, true)
     })
     .raw(`

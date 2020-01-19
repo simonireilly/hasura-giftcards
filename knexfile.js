@@ -1,40 +1,24 @@
 // Update with your config settings.
 
-module.exports = {
-  development: {
-    client: 'postgresql',
-    connection: process.env.DATABASE_URL,
-    pool: {
-      min: 2,
-      max: 10
-    },
-    migrations: {
-      tableName: 'knex_migrations',
-      directory: './data/migrations'
-    }
+const config = {
+  client: 'postgresql',
+  connection: process.env.DATABASE_URL,
+  pool: {
+    min: 2,
+    max: 10
   },
-
-  staging: {
-    client: 'postgresql',
-    connection: process.env.DATABASE_URL,
-    pool: {
-      min: 2,
-      max: 10
-    },
-    migrations: {
-      tableName: 'knex_migrations'
-    }
-  },
-
-  production: {
-    client: 'postgresql',
-    connection: process.env.DATABASE_URL,
-    pool: {
-      min: 2,
-      max: 10
-    },
-    migrations: {
-      tableName: 'knex_migrations'
-    }
+  migrations: {
+    tableName: 'knex_migrations',
+    directory: './data/migrations'
   }
+}
+
+module.exports = {
+  test: {
+    ...config,
+    connection: 'postgres://postgres:admin@postgres:5432/gift_cards_test'
+  },
+  development: config,
+  staging: config,
+  production: config
 }

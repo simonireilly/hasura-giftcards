@@ -1,0 +1,54 @@
+allowlist: []
+functions: []
+query_collections: []
+remote_schemas: []
+tables:
+- array_relationships: []
+  computed_fields: []
+  configuration:
+    custom_column_names: {}
+    custom_root_fields:
+      delete: null
+      insert: null
+      select: null
+      select_aggregate: null
+      select_by_pk: null
+      update: null
+  delete_permissions: []
+  event_triggers: []
+  insert_permissions: []
+  is_enum: false
+  object_relationships:
+  - comment: null
+    name: gift_card
+    using:
+      foreign_key_constraint_on: gift_card_id
+  select_permissions: []
+  table: claims
+  update_permissions: []
+- array_relationships:
+  - comment: null
+    name: claims
+    using:
+      foreign_key_constraint_on:
+        column: gift_card_id
+        table: claims
+  computed_fields: []
+  configuration:
+    custom_column_names: {}
+    custom_root_fields:
+      delete: null
+      insert: null
+      select: null
+      select_aggregate: null
+      select_by_pk: null
+      update: null
+  delete_permissions: []
+  event_triggers: []
+  insert_permissions: []
+  is_enum: false
+  object_relationships: []
+  select_permissions: []
+  table: gift_cards
+  update_permissions: []
+version: 2
