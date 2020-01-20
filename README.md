@@ -4,7 +4,22 @@
 
 A simple gift card payment gateway written in hasura with postgres 12
 
+## DEV EX
+
+To boot the app run `make up`.
+
+To test the app run `make test`
+
+To update the metadata use the hasura console at `localhost:8080` then run `make hasura-export-metadata`
+
+Meta data is applied on boot of the hasura docker iamge, to clear it run `make hasura-clear-metadata`
+
 ## Workflow
+
+- Request a gift card with an initial balance and a CODE
+- Request a claim on that gift card which must be less than the available balance
+- Settle/Reject the claim to increment the redeemed balance on the gift card
+- Repeat
 
 ## Queries
 
