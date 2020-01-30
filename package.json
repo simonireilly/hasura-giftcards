@@ -24,7 +24,6 @@
     "graphql-request": "^1.8.2",
     "graphql-tag": "^2.10.1",
     "jest": "^24.9.0",
-    "replay": "https://github.com/simonireilly/node-replay.git",
     "standard": "^14.3.1"
   }
 }
