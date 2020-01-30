@@ -22,7 +22,7 @@ tables:
   - comment: null
     name: gift_card
     using:
-      foreign_key_constraint_on: gift_card_id
+      foreign_key_constraint_on: gift_card_code
   select_permissions: []
   table: claims
   update_permissions: []
@@ -31,7 +31,7 @@ tables:
     name: claims
     using:
       foreign_key_constraint_on:
-        column: gift_card_id
+        column: gift_card_code
         table: claims
   computed_fields: []
   configuration:
@@ -48,7 +48,23 @@ tables:
   insert_permissions: []
   is_enum: false
   object_relationships: []
-  select_permissions: []
+  select_permissions:
+  - comment: null
+    permission:
+      allow_aggregations: false
+      columns:
+      - available_balance
+      - code
+      - email
+      - initial_balance
+      - redeemed_balance
+      - valid_from
+      - valid_to
+      computed_fields: []
+      filter:
+        code:
+          _eq: x-hasura-gift-card-code
+    role: customer
   table: gift_cards
   update_permissions: []
 version: 2

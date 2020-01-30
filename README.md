@@ -6,6 +6,8 @@ A simple gift card payment gateway written in hasura with postgres 12
 
 ## DEV EX
 
+Starting from scratch `make down init restart tail`.
+
 To boot the app run `make up`.
 
 To test the app run `make test`
