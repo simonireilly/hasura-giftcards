@@ -5,5 +5,5 @@ exports.up = function (knex) {
 
 exports.down = function (knex) {
   return knex.schema
-    .raw('DROP SCHEMA IF EXISTS public')
+    .raw('select * from now()') // no-op
 }

@@ -5,6 +5,7 @@ exports.up = function (knex) {
 
       table.integer('initial_balance').notNullable().comment('The initial balance, in UK pence, on the gift card')
       table.integer('redeemed_balance').notNullable().default(0).comment('The redeemed balance, in UK pence, on the gift card')
+      table.integer('allocated_balance').notNullable().default(0).comment('The allocated balance, in UK pence, on the gift card')
 
       table.string('code').notNullable().unique().comment('The unique code for the gift card')
 
@@ -23,7 +24,7 @@ exports.up = function (knex) {
     .raw(`
       ALTER TABLE gift_cards
       ADD COLUMN available_balance integer GENERATED ALWAYS AS (
-        initial_balance - redeemed_balance
+        initial_balance - redeemed_balance - allocated_balance
       ) STORED;
     `)
 }
