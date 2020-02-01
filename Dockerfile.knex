@@ -4,5 +4,9 @@ RUN apk add git
 
 COPY ./package.json /app/
 COPY ./yarn.lock /app/
+
 WORKDIR /app
+
 RUN yarn install
+
+COPY . /app

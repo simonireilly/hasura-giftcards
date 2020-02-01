@@ -4,6 +4,18 @@
 
 A simple gift card payment gateway written in hasura with postgres 12
 
+## DEV EX
+
+Starting from scratch `make down init restart tail`.
+
+To boot the app run `make up`.
+
+To test the app run `make test`
+
+To update the metadata use the hasura console at `localhost:8080` then run `make hasura-export-metadata`
+
+Meta data is applied on boot of the hasura docker iamge, to clear it run `make hasura-clear-metadata`
+
 ## Overview
 
 ![](basic-entities.png)
