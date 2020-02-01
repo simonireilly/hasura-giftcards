@@ -27,7 +27,7 @@ restart: # Restart the backend
 	make stop up
 
 down: # make the backend down and remove any orphaned containers, and all volumes
-	docker-compose down --volumes --remove-orphans --rmi=all
+	docker-compose down --volumes --remove-orphans --rmi=local
 
 tail: # Tail the docker compose logs for the backend
 	docker-compose logs -f --tail="100"
