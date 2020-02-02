@@ -11,7 +11,7 @@ init: # Init the entire project ready to run
 	make db-migrate ENV=test
 
 test:
-	make up ENV=test
+	make up
 	docker-compose run --rm knex yarn jest --detectOpenHandles
 
 build: # Build the backend
