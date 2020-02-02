@@ -12,7 +12,7 @@ init: # Init the entire project ready to run
 
 test:
 	make up ENV=test
-	docker-compose run --rm knex yarn jest --detectOpenHandles || true
+	docker-compose run --rm knex yarn jest --detectOpenHandles
 
 build: # Build the backend
 	docker-compose build

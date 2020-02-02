@@ -31,7 +31,6 @@ services:
       NODE_ENV: development
       DATABASE_URL: postgres://postgres:@postgres:5432/gift_cards_${ENV:-development}
 
-  # Sample token generator for testing etc.
   authentication:
     image: ruby:2.7.0-alpine3.11
     command:
