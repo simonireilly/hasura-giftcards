@@ -30,8 +30,6 @@ services:
     environment:
       NODE_ENV: development
       DATABASE_URL: postgres://postgres:@postgres:5432/gift_cards_${ENV:-development}
-    volumes:
-      - .:/app:delegated
 
   # Sample token generator for testing etc.
   authentication:
