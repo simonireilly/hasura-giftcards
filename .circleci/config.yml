@@ -4,19 +4,15 @@ jobs:
     working_directory: ~/app
     docker:
       - image: circleci/node:12.0.0
-      - image: postgres:12.1-alpine
+
     steps:
       - checkout
-      - restore_cache:
-          key: dependency-cache-v1-{{ checksum "yarn.lock" }}
       - run:
-          name: Install Dependencies
-          command: yarn --network-concurrency 1 --frozen-lockfile
-      - save_cache:
-          key: dependency-cache-v1-{{ checksum "yarn.lock" }}
-          paths:
-            - ~/.cache/yarn
-            - ./node_modules
+          name: Install Docker Compose
+          command: |
+            curl -L https://github.com/docker/compose/releases/download/1.25.3/docker-compose-`uname -s`-`uname -m` > ~/docker-compose
+            chmod +x ~/docker-compose
+            sudo mv ~/docker-compose /usr/local/bin/docker-compose
+      - setup_remote_docker
       - run:
-          name: test
-          command: yarn jest
+          command: make test

@@ -19,25 +19,26 @@ const baseClaims = {
 }
 
 module.exports = ({
-  role,
-  subdomain
+  role = null,
+  subdomain = null
 }) => {
-  const claims = {
-    ...baseClaims,
-    'https://hasura.io/jwt/claims': {
-      'x-hasura-allowed-roles': [role],
-      'x-hasura-default-role': role,
-      'x-hasura-account-reference': subdomain
+  const headers = {}
+  if (role !== null && subdomain !== null) {
+    const claims = {
+      ...baseClaims,
+      'https://hasura.io/jwt/claims': {
+        'x-hasura-allowed-roles': [role],
+        'x-hasura-default-role': role,
+        'x-hasura-account-reference': subdomain
+      }
     }
+    const token = jwt.sign(claims, hmacSecret, {
+      algorithm
+    })
+    headers.Authorization = `Bearer ${token}`
   }
 
-  const token = jwt.sign(claims, hmacSecret, {
-    algorithm
-  })
-
-  return new GraphQLClient('http://hasura:8080/v1alpha1/graphql', {
-    headers: {
-      Authorization: `Bearer ${token}`
-    }
+  return new GraphQLClient(process.env.HASURA_ENDPOINT, {
+    headers
   })
 }
