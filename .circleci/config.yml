@@ -2,16 +2,11 @@ version: 2.0
 jobs:
   build:
     machine:
-      image: ubuntu-1604:201903-0
+      image: ubuntu-1604:201903-01
+      docker_layer_caching: true
 
     steps:
       - checkout
-      - run:
-          name: Install Docker Compose
-          command: |
-            curl -L https://github.com/docker/compose/releases/download/1.25.3/docker-compose-`uname -s`-`uname -m` > ~/docker-compose
-            chmod +x ~/docker-compose
-            sudo mv ~/docker-compose /usr/local/bin/docker-compose
       - run:
           command: |
             set -x
