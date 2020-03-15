@@ -21,7 +21,7 @@ jobs:
           HASURA_GRAPHQL_ADMIN_SECRET: myadminsecretkey
           HASURA_GRAPHQL_JWT_SECRET: "{\r\n  \"type\": \"HS256\",\r\n  \"key\": \"tXkNtKBfFpcu4Ac3GENggguWvFR9JFblo3ef\",\r\n  \"claims_format\": \"json\"\r\n}"
           AWAIT_DATABASE_STARTUP: 20
-        entrypoint: "sleep 10 && ./docker-entrypoint.sh"
+        entrypoint: "bash -c 'sleep 10 && ./docker-entrypoint.sh'"
 
     steps:
       - checkout
