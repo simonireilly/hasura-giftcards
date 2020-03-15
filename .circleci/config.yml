@@ -20,8 +20,7 @@ jobs:
           HASURA_GRAPHQL_ENABLED_LOG_TYPES: startup, http-log, webhook-log, websocket-log, query-log
           HASURA_GRAPHQL_ADMIN_SECRET: myadminsecretkey
           HASURA_GRAPHQL_JWT_SECRET: "{\r\n  \"type\": \"HS256\",\r\n  \"key\": \"tXkNtKBfFpcu4Ac3GENggguWvFR9JFblo3ef\",\r\n  \"claims_format\": \"json\"\r\n}"
-          AWAIT_DATABASE_STARTUP: 20
-        entrypoint: "sh -c 'sleep 10 && /bin/docker-entrypoint.sh'"
+        entrypoint: "sh -c 'sleep 5 && /bin/docker-entrypoint.sh'"
 
     steps:
       - checkout
