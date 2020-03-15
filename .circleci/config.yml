@@ -3,13 +3,14 @@ jobs:
   build:
     working_directory: ~/app
     docker:
+      // First image is the primary image
+      - image: circleci/node:12.0.0
       - image: hasura/graphql-engine:latest.cli-migrations
         environment:
           HASURA_GRAPHQL_DATABASE_URL: postgres://postgres:@postgres:5432/gift_cards_test
           HASURA_GRAPHQL_ENABLED_LOG_TYPES: startup, http-log, webhook-log, websocket-log, query-log
           HASURA_GRAPHQL_ADMIN_SECRET: myadminsecretkey
           HASURA_GRAPHQL_JWT_SECRET: "{\r\n  \"type\": \"HS256\",\r\n  \"key\": \"tXkNtKBfFpcu4Ac3GENggguWvFR9JFblo3ef\",\r\n  \"claims_format\": \"json\"\r\n}"
-      - image: circleci/node:12.0.0
       - image: postgres:12.1-alpine
         environment:
           POSTGRES_DB: gift_cards_test
@@ -27,5 +28,8 @@ jobs:
             - ~/.cache/yarn
             - ./node_modules
       - run:
-          name: test
+          name: run database migrations
+          command: yarn knex migrate:latest --env $(ENV)
+      - run:
+          name: Run all tests
           command: yarn jest
