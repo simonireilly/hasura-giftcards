@@ -5,6 +5,8 @@ services:
     image: postgres:12.1-alpine
     ports:
       - 5432
+    environment:
+      - POSTGRES_DB: gift_cards_${ENV:-development}
 
   hasura:
     image: hasura/graphql-engine:latest.cli-migrations
