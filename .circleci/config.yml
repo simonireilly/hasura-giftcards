@@ -34,7 +34,7 @@ jobs:
             - ./node_modules
       - run:
           name: run database migrations
-          command: yarn knex migrate:latest --env $(ENV)
+          command: yarn knex migrate:latest --env test
       - run:
           name: Run all tests
           command: yarn jest
