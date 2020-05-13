@@ -4,21 +4,16 @@
 
 A simple gift card payment gateway written in hasura with postgres 12
 
-## DEV EX
+- [Gift Cards Hasura](#gift-cards-hasura)
+  - [Card Issue and use flow](#card-issue-and-use-flow)
+    - [Authentication](#authentication)
+    - [Workflow](#workflow)
+  - [DEV EX](#dev-ex)
+  - [Testing Locally](#testing-locally)
 
-Starting from scratch `make down init restart tail`.
+## Card Issue and use flow
 
-To boot the app run `make up`.
-
-To test the app run `make test`
-
-To update the metadata use the hasura console at `localhost:8080` then run `make hasura-export-metadata`
-
-Meta data is applied on boot of the hasura docker iamge, to clear it run `make hasura-clear-metadata`
-
-## Overview
-
-![](basic-entities.png)
+![](.doc/architecture/architecture.png)
 
 ### Authentication
 
@@ -80,6 +75,18 @@ mutation CreateClaim(objects: {
 
 4. The backend service will settle the claims using the organizations valid JWT.
 5. Successfully settled claims reduce the balance of the card, while pending claims reduce the available balance (*the ability to generate new claims is determined by the available balance*)
+
+## DEV EX
+
+Starting from scratch `make down init restart tail`.
+
+To boot the app run `make up`.
+
+To test the app run `make test`
+
+To update the metadata use the hasura console at `localhost:8080` then run `make hasura-export-metadata`
+
+Meta data is applied on boot of the hasura docker iamge, to clear it run `make hasura-clear-metadata`
 
 ## Testing Locally
 

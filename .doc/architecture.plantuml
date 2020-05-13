@@ -1,0 +1,48 @@
+@startuml
+
+actor User
+database FrontEndStorage
+
+== Issue Card ==
+User --> FrontendForm: Requests a GiftCard
+FrontendForm --> GiftCard: Create a GiftCard
+GiftCard --> FrontendForm: Return GiftCard
+FrontendForm --> User: Confirmation of GiftCard
+
+== Use GiftCard ==
+User --> FrontendForm: Enter GiftCard code
+FrontendForm --> GiftCard: Request payment token (Open webhook)
+activate GiftCard #FFBBBB
+
+group Authenticate
+GiftCard --> GiftCard: Authenticate Store JWT
+else Unauthorised
+GiftCard --> FrontendForm !!: Authentication is invalid
+end
+
+group Activate
+GiftCard --> GiftCard: Activate user GiftCard
+else Unauthorised
+GiftCard --> FrontendForm !!: Token is invalid
+end
+
+GiftCard --> FrontendForm: Send ledger copy
+FrontendForm --> User: View previous transactions
+
+group validation
+GiftCard --> GiftCard: Balance Check
+else invalid
+GiftCard --> FrontendForm !!: Insufficent balance
+FrontendForm --> User !!: Notification of rejection
+end
+
+group Token Creation
+GiftCard --> GiftCard: Ring-fence balance
+GiftCard --> GiftCard: Create new token
+GiftCard --> FrontendForm
+
+FrontendForm --> FrontEndStorage: Persist the token for settling
+FrontendForm --> User: success
+end
+
+@enduml
