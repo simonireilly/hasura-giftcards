@@ -2,14 +2,12 @@ exports.up = function (knex) {
   return knex.schema.withSchema('public')
     .createTable('claims', function (table) {
       table.increments('id').primary()
+      table.string('account_reference').notNullable().comment('The account reference that owns the claim')
 
-      table.string('gift_card_code')
-        .notNullable()
-        .index()
-        .references('code').inTable('public.gift_cards')
+      table.string('gift_card_code').notNullable().index().references('code').inTable('public.gift_cards')
 
       table.integer('amount').notNullable().comment('The amount attempting to ring fence for the claim')
-      table.uuid('authorisation_code').notNullable().comment('The one time authorisation code for validating and settling the claim')
+      table.uuid('authorisation_code').notNullable().defaultTo(knex.raw('uuid_generate_v4()')).comment('The one time authorisation code for validating and settling the claim')
 
       table.enu('state', ['allocated', 'validated', 'settled', 'rejected'], {
           useNative: true,

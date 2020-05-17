@@ -10,9 +10,12 @@
   "author": "",
   "license": "ISC",
   "standard": {
-    "env": ["jest"]
+    "env": [
+      "jest"
+    ]
   },
   "dependencies": {
+    "hasura-cli": "^1.1.0",
     "knex": "^0.20.8",
     "pg": "^7.17.1"
   },
@@ -24,7 +27,7 @@
     "graphql-request": "^1.8.2",
     "graphql-tag": "^2.10.1",
     "jest": "^24.9.0",
-    "replay": "https://github.com/simonireilly/node-replay.git",
+    "jsonwebtoken": "^8.5.1",
     "standard": "^14.3.1"
   }
 }

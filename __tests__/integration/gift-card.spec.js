@@ -1,12 +1,16 @@
-import { CREATE_GIFT_CARD, GET_GIFT_CARD } from '../../utils/queries'
-import { GraphQLClient } from 'graphql-request'
-import { truncate, migrate, close } from '../../data/support'
+import {
+  CREATE_GIFT_CARD,
+  GET_GIFT_CARD,
+  CREATE_CLAIM
+} from '../../support/queries'
 
-const client = new GraphQLClient('http://hasura:8080/v1alpha1/graphql', {
-  headers: {
-    'x-hasura-admin-secret': 'myadminsecretkey'
-  }
-})
+import {
+  truncate,
+  migrate,
+  close
+} from '../../support/db'
+
+import clientConstructor from '../../support/client'
 
 const code = 'STORE-0001'
 const initialBalance = 2000
@@ -16,6 +20,11 @@ const variables = {
   initialBalance
 }
 
+const organisationClient = clientConstructor({
+  role: 'organisation',
+  subdomain: 'tenant_a'
+})
+
 describe('integration tests', () => {
   beforeAll(async () => migrate())
   beforeEach(async () => truncate())
@@ -23,10 +32,10 @@ describe('integration tests', () => {
 
   describe('create', () => {
     it('requires unique gift card codes', async () => {
-      await client.request(CREATE_GIFT_CARD, variables)
+      await organisationClient.request(CREATE_GIFT_CARD, variables)
       let error
       try {
-        await client.request(CREATE_GIFT_CARD, variables)
+        await organisationClient.request(CREATE_GIFT_CARD, variables)
       } catch (e) {
         error = e
       }
@@ -35,7 +44,7 @@ describe('integration tests', () => {
     })
 
     it('creates a valid gift card', async () => {
-      const response = await client.request(CREATE_GIFT_CARD, variables)
+      const response = await organisationClient.request(CREATE_GIFT_CARD, variables)
 
       expect(response).toEqual(
         expect.objectContaining({
@@ -46,23 +55,33 @@ describe('integration tests', () => {
   })
 
   it('fetches gift cards by code', async () => {
-    await client.request(CREATE_GIFT_CARD, variables)
-    const response = await client.request(GET_GIFT_CARD, { code })
+    await organisationClient.request(CREATE_GIFT_CARD, variables)
+    await organisationClient.request(CREATE_CLAIM, {
+      gift_card_code: variables.code,
+      amount: 2000
+    })
+    const response = await organisationClient.request(GET_GIFT_CARD, {
+      code
+    })
 
     expect(response).toEqual(
       expect.objectContaining({
-        gift_cards: [
-          {
-            available_balance: initialBalance,
-            claims: [],
-            id: expect.any(Number),
-            code,
-            initial_balance: initialBalance,
-            created_at: expect.any(String),
-            updated_at: expect.any(String),
-            valid_from: expect.any(String),
-            valid_to: expect.any(String)
-          }]
+        gift_cards: [{
+          account_reference: 'tenant_a',
+          claims: [expect.objectContaining({
+            amount: 2000,
+            account_reference: 'tenant_a',
+            state: 'allocated',
+            id: expect.any(Number)
+          })],
+          id: expect.any(Number),
+          code,
+          initial_balance: initialBalance,
+          created_at: expect.any(String),
+          updated_at: expect.any(String),
+          valid_from: expect.any(String),
+          valid_to: expect.any(String)
+        }]
       })
     )
   })

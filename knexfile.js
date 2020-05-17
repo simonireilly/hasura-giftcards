@@ -14,10 +14,7 @@ const config = {
 }
 
 module.exports = {
-  test: {
-    ...config,
-    connection: 'postgres://postgres:admin@postgres:5432/gift_cards_test'
-  },
+  test: config,
   development: config,
   staging: config,
   production: config

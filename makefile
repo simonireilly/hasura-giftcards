@@ -11,8 +11,8 @@ init: # Init the entire project ready to run
 	make db-migrate ENV=test
 
 test:
-	make up ENV=test
-	docker-compose run --rm knex yarn jest --detectOpenHandles || true
+	make up
+	docker-compose run --rm knex yarn jest --detectOpenHandles
 
 build: # Build the backend
 	docker-compose build
@@ -27,7 +27,7 @@ restart: # Restart the backend
 	make stop up
 
 down: # make the backend down and remove any orphaned containers, and all volumes
-	docker-compose down --volumes --remove-orphans --rmi=all
+	docker-compose down --volumes --remove-orphans --rmi=local
 
 tail: # Tail the docker compose logs for the backend
 	docker-compose logs -f --tail="100"

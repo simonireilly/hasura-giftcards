@@ -16,14 +16,54 @@ tables:
       update: null
   delete_permissions: []
   event_triggers: []
-  insert_permissions: []
+  insert_permissions:
+  - comment: null
+    permission:
+      check:
+        account_reference:
+          _eq: x-hasura-account-reference
+      columns:
+      - amount
+      - gift_card_code
+      - state
+      set:
+        account_reference: x-hasura-account-reference
+    role: organisation
+  - comment: null
+    permission:
+      check:
+        account_reference:
+          _eq: x-hasura-account-reference
+      columns:
+      - amount
+      - gift_card_code
+      set:
+        account_reference: x-hasura-account-reference
+    role: store
   is_enum: false
   object_relationships:
   - comment: null
     name: gift_card
     using:
       foreign_key_constraint_on: gift_card_code
-  select_permissions: []
+  select_permissions:
+  - comment: null
+    permission:
+      allow_aggregations: false
+      columns:
+      - id
+      - account_reference
+      - gift_card_code
+      - amount
+      - authorisation_code
+      - state
+      - created_at
+      - updated_at
+      computed_fields: []
+      filter:
+        account_reference:
+          _eq: x-hasura-account-reference
+    role: organisation
   table: claims
   update_permissions: []
 - array_relationships:
@@ -45,7 +85,24 @@ tables:
       update: null
   delete_permissions: []
   event_triggers: []
-  insert_permissions: []
+  insert_permissions:
+  - comment: null
+    permission:
+      check:
+        account_reference:
+          _eq: X-Hasura-Account-Reference
+      columns:
+      - code
+      - created_at
+      - email
+      - initial_balance
+      - redeemed_balance
+      - updated_at
+      - valid_from
+      - valid_to
+      set:
+        account_reference: x-hasura-Account-Reference
+    role: organisation
   is_enum: false
   object_relationships: []
   select_permissions:
@@ -53,18 +110,22 @@ tables:
     permission:
       allow_aggregations: false
       columns:
-      - available_balance
+      - account_reference
       - code
+      - created_at
       - email
+      - id
       - initial_balance
       - redeemed_balance
+      - updated_at
       - valid_from
       - valid_to
+      - verification_code
       computed_fields: []
       filter:
-        code:
-          _eq: x-hasura-gift-card-code
-    role: customer
+        account_reference:
+          _eq: X-Hasura-Account-Reference
+    role: organisation
   table: gift_cards
   update_permissions: []
 version: 2

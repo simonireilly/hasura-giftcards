@@ -2,6 +2,7 @@ const CREATE_GIFT_CARD = `
   mutation CreateGiftCard($code: String, $initialBalance: Int) {
     insert_gift_cards(objects: {initial_balance: $initialBalance, code: $code}) {
       returning {
+        account_reference
         initial_balance
         id
         created_at
